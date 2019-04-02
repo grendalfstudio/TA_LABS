@@ -1,73 +1,166 @@
-﻿// B-tree.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-
-#include "pch.h"
+﻿#include "pch.h"
 #include <iostream>
+#include <algorithm>
 #include <list>
 
 using namespace std;
 
-const int NODE_SIZE = 50;
+const int NODESIZE = 50;				// Minimal number of keys in the node
 
 int main()
 {
-
+	int a[] = { 0, 2, 4, 6, 8, 10 };
+	int b = 3;
+	auto *w = lower_bound(a, a + 6, b);
+	cout << *w;
 }
 
-struct Node
+// Node structure
+template<typename T> struct Node
 {
-	template<typename T> Node()
-	{
-		T keys[2 * NODE_SIZE];
-		Node *children[2 * NODE_SIZE + 1];
-		Node *parent;
-		int keys_amount = 0,
-			children_amount = 0;
-		bool isLeaf;
-
-	}
+	T keys[2 * NODESIZE];				// Massive of keys
+	Node *children[2 * NODESIZE + 1];	// Massive of pointers to the child subtrees
+	Node *parent = nullptr;				// Pointer to the parent node
+	int size = 0;						// Number of keys (number of children is 'size' + 1)
+	bool isLeaf = false;				// Flag that shows is it a leaf node
 };
 
-class Btree
+// B-tree class
+template<typename T> class Btree
 {
-	Node* root;
-	template<typename T> Btree()
+	Node<T> *root;				// Root of the B-tree
+	Btree()
 	{
-		root = new Node();
+		root->isLeaf = true;	/// Root is a leaf at start
 	}
-
-	template <typename T>
-	void add(T item)
+	// Adds a key to the B-tree (tree balances automatically)
+	void add(T& key)								//
 	{
-		Node* current = root;
-		// While we are not in a leaf
-		while (current.isLeaf == false)
-		{	// Move to the necessary keys and children
-			bool isLast = true;
-			for (int i = 0; i < 2 * NODE_SIZE; i++)
+		Node<T> *current = root;					//Iterator to the B-tree nodes
+		///Searching the nessesary node
+		while (current->isLeaf == false)			///While we are not in a leaf
+		{											///Move to the necessary child
+			bool isLastChild = true;				// Flag that shows is it a last child that is necessary to choose
+			for (int i = 0; i < current->size; i++)
 			{
-				if (item < current->keys[i])
-				{
-					current = current->children[i];
-					isLast = false;
+				if (key < current->keys[i])		//It can be changed to comparable function 'less()'
+				{	/// If true it means that we found a key
+					/// BEFORE which we should add 'key'
+					current = current->children[i];	///Go down to the child subtree
+					isLastChild = false;
 					break;
 				}
 			}
-			if (isLast == true)
+			if (isLastChild == true)				///Special case
 			{
-				current = current->children[2 * NODE_SIZE];
+				current = current->children[current->size];
 			}
 		}
-		while(Compare(item, current.keys[i]))
+		/// Adding 'key'
+		if (current->size < 2 * NODESIZE)
+		{
+			current->keys[current->size] = key;
+			current->size++;
+			sort(current->keys, current->keys + current->size, less);
+		}
+		else { balance(current, key); }
 	}
 
-	/*template <typename T>
-	bool contains(T item) { return true; }
+	// TODO
+	/*
+	bool contains(T key) { return true; }
 
-	template <typename T>
-	void remove(T item);
+	void remove(T key);*/
 
-	void balance();*/
+	void balance(Node<T>& divideNode, T& key) // TODO
+	{
+		///Getting the 'middle' and 'divideNode' ready to make a balancing
+		T middle = current->keys[NODESIZE];		///Default: 'middle' = middle key
+			///Checks if the 'key' is a middle key
+		T *keyPosition = lower_bound(current->keys, current->keys + current->size, key, less);
+		if (*keyPosition == middle)
+		{
+			middle = key;										///'middle' must always contain a superfluous(зайвий) element
+		}
+		else
+		{
+			current->keys[keyPosition - current->keys] = key;	///and 'current->keys' must contain all other keys
+		}
+
+		if (divideNode.parent != nullptr)
+		{
+			Node<T> *newLeftNode,
+					*newRightNode;
+
+			/* //Getting newRoot ready
+			newRoot->keys[0] = middle;
+			newRoot->children[0] = newLeftNode;
+			newRoot->children[1] = newRightNode;
+			newRoot->size = 1;*/
+
+			///Getting newLeftNode ready
+			newLeftNode->parent = divideNode.parent;
+			newLeftNode->isLeaf = divideNode.isLeaf;
+			newLeftNode->size = NODESIZE;
+			for (int i = 0; i < NODESIZE; i++)
+			{
+				newLeftNode->keys[i] = divideNode.keys[i];
+				newLeftNode->children[i] = divideNode.children[i];
+			}
+			newRightNode->children[NODESIZE] = divideNode.children[NODESIZE];			///???????
+
+			///Getting newRightNode ready
+			newRightNode->parent = divideNode.parent;
+			newRightNode->isLeaf = divideNode.isLeaf;
+			newRightNode->size = NODESIZE;
+			for (int i = 0; i < NODESIZE; i++)
+			{
+				newRightNode->keys[i] = divideNode.keys[NODESIZE + i];
+				newRightNode->children[i] = divideNode.children[NODESIZE + i];
+			}
+			newRightNode->children[NODESIZE] = divideNode.children[2 * NODESIZE];		///???????
+
+			///delete the rubbish
+			delete divideNode;
+
+		}
+		else
+		{
+			Node<T> *newLeftNode,
+					*newRightNode,
+					*newRoot;
+
+			///Getting newRoot ready
+			newRoot->keys[0] = middle;
+			newRoot->children[0] = newLeftNode;
+			newRoot->children[1] = newRightNode;
+			newRoot->size = 1;
+
+			///Getting newLeftNode ready
+			for (int i = 0; i < NODESIZE; i++)
+			{
+				newLeftNode->keys[i] = divideNode.keys[i];
+				newLeftNode->children[i] = divideNode.children[i];
+			}
+			newRightNode->children[NODESIZE] = divideNode.children[NODESIZE];			///???????
+
+			///Getting newRightNode ready
+			for (int i = 0; i < NODESIZE; i++)
+			{
+				newRightNode->keys[i] = divideNode.keys[NODESIZE + i];
+				newRightNode->children[i] = divideNode.children[NODESIZE + i];
+			}
+			newRightNode->children[NODESIZE] = divideNode.children[2 * NODESIZE];		///???????
+
+			///delete the rubbish
+			delete divideNode;
+		}
+	}
+
+	bool less(T& first, T& second)
+	{
+		return (first <= second ? true : false);
+	}
 };
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
