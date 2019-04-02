@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const int NODESIZE = 50;				// Minimal number of keys in the node
+const int T_FACTOR = 50;
 
 int main()
 {
@@ -18,23 +18,23 @@ int main()
 // Node structure
 template<typename T> struct Node
 {
-	T keys[2 * NODESIZE];				// Massive of keys
-	Node *children[2 * NODESIZE + 1];	// Massive of pointers to the child subtrees
+	T keys[2 * T_FACTOR - 1];			// Massive of keys
+	Node *children[2 * T_FACTOR];		// Massive of pointers to the child subtrees
 	Node *parent = nullptr;				// Pointer to the parent node
 	int size = 0;						// Number of keys (number of children is 'size' + 1)
-	bool isLeaf = false;				// Flag that shows is it a leaf node
+	bool isLeaf = false;
 };
 
 // B-tree class
 template<typename T> class Btree
 {
-	Node<T> *root;				// Root of the B-tree
+	Node<T> *root;
 	Btree()
 	{
-		root->isLeaf = true;	/// Root is a leaf at start
+		root->isLeaf = true;	/// newRoot is a leaf at start
 	}
 	// Adds a key to the B-tree (tree balances automatically)
-	void add(T& key)								//
+	/*void add(T& key)								//
 	{
 		Node<T> *current = root;					//Iterator to the B-tree nodes
 		///Searching the nessesary node
@@ -57,7 +57,7 @@ template<typename T> class Btree
 			}
 		}
 		/// Adding 'key'
-		if (current->size < 2 * NODESIZE)
+		if (current->size < 2 * T_FACTOR)
 		{
 			current->keys[current->size] = key;
 			current->size++;
@@ -72,10 +72,10 @@ template<typename T> class Btree
 
 	void remove(T key);*/
 
-	void balance(Node<T>& divideNode, T& key) // TODO
+	/*void balance(Node<T>& divideNode, T& key) // TODO
 	{
-		///Getting the 'middle' and 'divideNode' ready to make a balancing
-		T middle = current->keys[NODESIZE];		///Default: 'middle' = middle key
+		///Setting the 'middle' and 'divideNode' ready to make a balancing
+		T middle = current->keys[T_FACTOR];		///Default: 'middle' = middle key
 			///Checks if the 'key' is a middle key
 		T *keyPosition = lower_bound(current->keys, current->keys + current->size, key, less);
 		if (*keyPosition == middle)
@@ -89,36 +89,36 @@ template<typename T> class Btree
 
 		if (divideNode.parent != nullptr)
 		{
-			Node<T> *newLeftNode,
-					*newRightNode;
+			Node<T> *leftNode,
+					*rightNode;
 
-			/* //Getting newRoot ready
+			/* //Setting newRoot ready
 			newRoot->keys[0] = middle;
-			newRoot->children[0] = newLeftNode;
-			newRoot->children[1] = newRightNode;
-			newRoot->size = 1;*/
+			newRoot->children[0] = leftNode;
+			newRoot->children[1] = rightNode;
+			newRoot->size = 1;
 
-			///Getting newLeftNode ready
-			newLeftNode->parent = divideNode.parent;
-			newLeftNode->isLeaf = divideNode.isLeaf;
-			newLeftNode->size = NODESIZE;
-			for (int i = 0; i < NODESIZE; i++)
+			///Setting leftNode ready
+			leftNode->parent = divideNode.parent;
+			leftNode->isLeaf = divideNode.isLeaf;
+			leftNode->size = T_FACTOR;
+			for (int i = 0; i < T_FACTOR; i++)
 			{
-				newLeftNode->keys[i] = divideNode.keys[i];
-				newLeftNode->children[i] = divideNode.children[i];
+				leftNode->keys[i] = divideNode.keys[i];
+				leftNode->children[i] = divideNode.children[i];
 			}
-			newRightNode->children[NODESIZE] = divideNode.children[NODESIZE];			///???????
+			rightNode->children[T_FACTOR] = divideNode.children[T_FACTOR];			///???????
 
-			///Getting newRightNode ready
-			newRightNode->parent = divideNode.parent;
-			newRightNode->isLeaf = divideNode.isLeaf;
-			newRightNode->size = NODESIZE;
-			for (int i = 0; i < NODESIZE; i++)
+			///Setting rightNode ready
+			rightNode->parent = divideNode.parent;
+			rightNode->isLeaf = divideNode.isLeaf;
+			rightNode->size = T_FACTOR;
+			for (int i = 0; i < T_FACTOR; i++)
 			{
-				newRightNode->keys[i] = divideNode.keys[NODESIZE + i];
-				newRightNode->children[i] = divideNode.children[NODESIZE + i];
+				rightNode->keys[i] = divideNode.keys[T_FACTOR + i];
+				rightNode->children[i] = divideNode.children[T_FACTOR + i];
 			}
-			newRightNode->children[NODESIZE] = divideNode.children[2 * NODESIZE];		///???????
+			rightNode->children[T_FACTOR] = divideNode.children[2 * T_FACTOR];		///???????
 
 			///delete the rubbish
 			delete divideNode;
@@ -126,35 +126,183 @@ template<typename T> class Btree
 		}
 		else
 		{
-			Node<T> *newLeftNode,
-					*newRightNode,
+			Node<T> *leftNode,
+					*rightNode,
 					*newRoot;
 
-			///Getting newRoot ready
+			///Setting newRoot ready
 			newRoot->keys[0] = middle;
-			newRoot->children[0] = newLeftNode;
-			newRoot->children[1] = newRightNode;
+			newRoot->children[0] = leftNode;
+			newRoot->children[1] = rightNode;
 			newRoot->size = 1;
 
-			///Getting newLeftNode ready
-			for (int i = 0; i < NODESIZE; i++)
+			///Setting leftNode ready
+			for (int i = 0; i < T_FACTOR; i++)
 			{
-				newLeftNode->keys[i] = divideNode.keys[i];
-				newLeftNode->children[i] = divideNode.children[i];
+				leftNode->keys[i] = divideNode.keys[i];
+				leftNode->children[i] = divideNode.children[i];
 			}
-			newRightNode->children[NODESIZE] = divideNode.children[NODESIZE];			///???????
+			rightNode->children[T_FACTOR] = divideNode.children[T_FACTOR];			///???????
 
-			///Getting newRightNode ready
-			for (int i = 0; i < NODESIZE; i++)
+			///Setting rightNode ready
+			for (int i = 0; i < T_FACTOR; i++)
 			{
-				newRightNode->keys[i] = divideNode.keys[NODESIZE + i];
-				newRightNode->children[i] = divideNode.children[NODESIZE + i];
+				rightNode->keys[i] = divideNode.keys[T_FACTOR + i];
+				rightNode->children[i] = divideNode.children[T_FACTOR + i];
 			}
-			newRightNode->children[NODESIZE] = divideNode.children[2 * NODESIZE];		///???????
+			rightNode->children[T_FACTOR] = divideNode.children[2 * T_FACTOR];		///???????
 
 			///delete the rubbish
 			delete divideNode;
 		}
+	}*/
+	
+	void add(T& key)
+	{
+		Node<T> *current = root;						//Iterator to the B-tree nodes
+		/// First check the root whether it is full (special case)
+		if (current->size == 2 * T_FACTOR - 1)
+		{
+			Node<T> *leftNode;
+			Node<T> *rightNode;
+			Node<T> *newRoot;
+			T middle = current->keys[T_FACTOR - 1];		// The element which will go to the 'newRoot'
+			/// Pushing the nodes
+			for (int i = 0; i < 2 * T_FACTOR - 1; i++)
+			{
+				if (i != T_FACTOR - 1)					/// We don't push the 'middle' to the nodes
+				{
+					if (current->keys[i] < middle)		/// Push the keys and its forward child to the 'leftNode'
+					{
+						leftNode->keys[leftNode->size] = current->keys[i];
+						leftNode->children[leftNode->size] = current->children[i];
+						leftNode->size++;
+					}
+					else								/// Push the keys and its forward child to the 'rightNode'
+					{
+						rightNode->keys[rightNode->size] = current->keys[i];
+						rightNode->children[rightNode->size] = current->children[i];
+						rightNode->size++;
+					}
+				}
+			}
+			/// Setting up the 'newRoot'
+			newRoot->keys[0] = middle;
+			newRoot->children[0] = leftNode;
+			newRoot->children[1] = rightNode;
+			newRoot->size++;
+			/// Setting up the 'leftNode'
+			leftNode->children[leftNode->size] = current->children[T_FACTOR - 1];
+			leftNode->parent = newRoot;
+			/// Setting up the 'rightNode'
+			rightNode->children[rightNode->size] = current->children[2 * T_FACTOR - 1];
+			rightNode->parent = newRoot;
+			/// Step down
+			current = (key < middle ? leftNode : rightNode);
+		}
+		/// Going down the B-tree
+		while (current->isLeaf == false)
+		{
+			if (current->size == 2 * T_FACTOR - 1)
+			{
+				Node<T> *leftNode;
+				Node<T> *rightNode;
+				Node<T> *parent = current->parent;
+				T middle = current->keys[T_FACTOR - 1];		// The element which will go to the 'current->parent'
+				/// Pushing the nodes
+				for (int i = 0; i < 2 * T_FACTOR - 1; i++)
+				{
+					if (i != T_FACTOR - 1)					/// We don't push the 'middle' to the nodes
+					{
+						if (current->keys[i] < middle)		/// Push the keys and its forward child to the 'leftNode'
+						{
+							leftNode->keys[leftNode->size] = current->keys[i];
+							leftNode->children[leftNode->size] = current->children[i];
+							leftNode->size++;
+						}
+						else								/// Push the keys and its forward child to the 'rightNode'
+						{
+							rightNode->keys[rightNode->size] = current->keys[i];
+							rightNode->children[rightNode->size] = current->children[i];
+							rightNode->size++;
+						}
+					}
+				}
+				/// Setting up the 'parent'
+				for (int i = parent->size; i >= 1; i--)
+				{
+					if(x >= parent->keys[i - 1])
+				}
+				parent->keys[parent->size] = key;
+				parent->size++;
+				/// Setting up the 'leftNode'
+				leftNode->children[leftNode->size] = current->children[T_FACTOR - 1];
+				leftNode->parent = parent;
+				/// Setting up the 'rightNode'
+				rightNode->children[rightNode->size] = current->children[2 * T_FACTOR - 1];
+				rightNode->parent = parent;
+				/// Step down
+				current = (key < middle ? leftNode : rightNode);
+			}
+
+			/*if (current->size == 2 * T_FACTOR - 1)
+			{	/// Split up the current node
+				Node<T> *newLeftNode,
+					*newRightNode,
+					*newRoot;
+				 //Setting newRoot ready
+				newRoot->keys[0] = middle;
+				newRoot->children[0] = newLeftNode;
+				newRoot->children[1] = newRightNode;
+				newRoot->size = 1;
+
+				///Setting leftNode ready
+				newLeftNode->parent = divideNode.parent;
+				newLeftNode->isLeaf = divideNode.isLeaf;
+				newLeftNode->size = T_FACTOR;
+				for (int i = 0; i < T_FACTOR; i++)
+				{
+					newLeftNode->keys[i] = divideNode.keys[i];
+					newLeftNode->children[i] = divideNode.children[i];
+				}
+				newRightNode->children[T_FACTOR] = divideNode.children[T_FACTOR];			///???????
+
+				///Setting rightNode ready
+				newRightNode->parent = divideNode.parent;
+				newRightNode->isLeaf = divideNode.isLeaf;
+				newRightNode->size = T_FACTOR;
+				for (int i = 0; i < T_FACTOR; i++)
+				{
+					newRightNode->keys[i] = divideNode.keys[T_FACTOR + i];
+					newRightNode->children[i] = divideNode.children[T_FACTOR + i];
+				}
+				newRightNode->children[T_FACTOR] = divideNode.children[2 * T_FACTOR];		///???????
+
+				///delete the rubbish
+				delete divideNode;
+			}
+
+			bool isLastChild = true;				// Flag that shows is it a last child that is necessary to choose
+
+			for (int i = 0; i < current->size; i++)
+			{
+				if (key < current->keys[i])		//It can be changed to comparable function 'less()'
+				{	/// If true it means that we found a key
+					/// BEFORE which we should add 'key'
+					current = current->children[i];	///Go down to the child subtree
+					isLastChild = false;
+					break;
+				}
+			}
+			if (isLastChild == true)				///Special case
+			{
+				current = current->children[current->size];
+			}*/
+		}
+		/// Pushing and arranging
+		current->keys[current->size] = key;
+		current->size++;
+		sort(current->keys, current->keys + current->size);
 	}
 
 	bool less(T& first, T& second)
