@@ -1,10 +1,4 @@
 ﻿  B-tree.cpp
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(65): error C3861: middle: идентификатор не найден
-  f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(165): note: выполняется компиляция ссылки на экземпляр шаблон класс "Btree<T>"
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(78): error C3861: current: идентификатор не найден
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(80): error C3861: current: идентификатор не найден
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(80): error C3861: item: идентификатор не найден
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(83): error C3861: item: идентификатор не найден
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(87): error C3861: current: идентификатор не найден
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(87): error C3861: item: идентификатор не найден
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(88): error C3861: current: идентификатор не найден
+f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(12): error C2065: Btree: необъявленный идентификатор
+f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(12): error C2146: синтаксическая ошибка: отсутствие ";" перед идентификатором "a"
+f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(12): error C2065: a: необъявленный идентификатор
