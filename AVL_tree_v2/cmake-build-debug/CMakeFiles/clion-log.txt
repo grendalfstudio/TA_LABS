@@ -1,0 +1,4 @@
+C:\Users\MykolaV\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\191.6183.77\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" C:\Users\MykolaV\source\repos\C++\AVL_tree_v2
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/MykolaV/source/repos/C++/AVL_tree_v2/cmake-build-debug
