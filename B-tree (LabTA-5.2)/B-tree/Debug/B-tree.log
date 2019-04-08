@@ -1,4 +1,2 @@
 ﻿  B-tree.cpp
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(12): error C2065: Btree: необъявленный идентификатор
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(12): error C2146: синтаксическая ошибка: отсутствие ";" перед идентификатором "a"
-f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree\b-tree.cpp(12): error C2065: a: необъявленный идентификатор
+  B-tree.vcxproj -> F:\Андрій\Git Repositories\TA_LABS\B-tree (LabTA-5.2)\Debug\B-tree.exe
