@@ -1,0 +1,7 @@
+﻿  B-tree (Habr version).cpp
+f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree (habr version)\b-tree (habr version).cpp(274): warning C4101: k2: неиспользованная локальная переменная
+f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree (habr version)\b-tree (habr version).cpp(273): warning C4101: k1: неиспользованная локальная переменная
+f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree (habr version)\b-tree (habr version).cpp(373): warning C4101: i: неиспользованная локальная переменная
+f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree (habr version)\b-tree (habr version).cpp(463): warning C4553: "==": результат выражения не используется; вы хотели использовать "="?
+f:\андрій\git repositories\ta_labs\b-tree (labta-5.2)\b-tree (habr version)\b-tree (habr version).cpp(452): warning C4101: i: неиспользованная локальная переменная
+  B-tree (Habr version).vcxproj -> F:\Андрій\Git Repositories\TA_LABS\B-tree (LabTA-5.2)\Debug\B-tree (Habr version).exe
