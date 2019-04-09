@@ -190,7 +190,6 @@ void Tree::restruct(BNode *node) {
 bool Tree::search(int key) {
 	return searchKey(key, this->root);
 }
-
 bool Tree::searchKey(int key, BNode *node) {
 	if (node != nullptr) {
 		if (node->leaf == false) {
@@ -244,7 +243,6 @@ void Tree::lconnect(BNode *node, BNode *othernode) {
 	}
 	delete othernode;
 }
-
 void Tree::rconnect(BNode *node, BNode *othernode) {
 	if (node == nullptr) return;
 	for (int i = 0; i <= (othernode->count - 1); i++) {
