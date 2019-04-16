@@ -12,7 +12,7 @@ struct Node
 {
 	int keys[2 * T_FACTOR - 1];			// Massive of keys
 	Node* children[2 * T_FACTOR];		// Massive of pointers to the child subtrees
-	Node* parent;						// Pointer to the parent node
+	Node* parent = nullptr;						// Pointer to the parent node
 	int size = 0;						// Number of keys (number of children is 'size' + 1)
 	bool isLeaf = false;				// Shows is it a leaf node
 };
@@ -21,7 +21,7 @@ struct Node
 class Btree
 {
 private:
-	Node* root = new Node();
+	Node* root;
 	/// Splits the node into two
 	Node* splitNode(Node* current, int key)
 	{
@@ -37,8 +37,16 @@ private:
 		{
 			leftNode->keys[i] = current->keys[i];
 			leftNode->children[i] = current->children[i];
+			if (leftNode->isLeaf == false)
+			{
+				leftNode->children[i]->parent = leftNode;
+			}
 		}
 		leftNode->children[T_FACTOR - 1] = current->children[T_FACTOR - 1];
+		if (leftNode->isLeaf == false)
+		{
+			leftNode->children[T_FACTOR - 1]->parent = leftNode;
+		}
 		/// Filling 'rightNode'
 		rightNode->isLeaf = current->isLeaf;
 		rightNode->size = T_FACTOR - 1;
@@ -47,8 +55,16 @@ private:
 		{
 			rightNode->keys[i - T_FACTOR] = current->keys[i];
 			rightNode->children[i - T_FACTOR] = current->children[i];
+			if (rightNode->isLeaf == false)
+			{
+				rightNode->children[i - T_FACTOR]->parent = rightNode;
+			}
 		}
 		rightNode->children[T_FACTOR - 1] = current->children[2 * T_FACTOR - 1];
+		if (rightNode->isLeaf == false)
+		{
+			rightNode->children[T_FACTOR - 1]->parent = rightNode;
+		}
 		/// Filling the parent
 		parent->size = parent->size + 1;
 		parent->children[parent->size] = parent->children[parent->size - 1];	/// It relocates in any case
@@ -69,214 +85,18 @@ private:
 		parent->children[i] = leftNode;
 		parent->children[i + 1] = rightNode;	/// Replaces the pointer to the 'current'
 		/// Step down
+		delete current;
 		return (key < middle ? leftNode : rightNode);
 	}
 public:
 	Btree()
 	{
+		root = new Node();
 		root->isLeaf = true;	/// root is a leaf at start
 	}
 
 	void add(int key)
 	{
-		/*Node* current = root;		//Iterator to the B-tree nodes
-		/// First check the 'root' whether it is full (special case)
-		if (current->size == 2 * T_FACTOR - 1)
-		{
-			Node* leftNode = new Node();
-			Node* rightNode = new Node();
-			Node* newRoot = new Node();
-			int middle = current->keys[T_FACTOR - 1];	// The middle element which will go to the 'newRoot'
-			/// Filling the nodes
-			for (int i = 0; i < 2 * T_FACTOR - 1; i++)
-			{
-				if (i != T_FACTOR - 1)					/// We don't push the 'middle' to the nodes
-				{
-					if (current->keys[i] < middle)		/// Push the keys and its forward child to the 'leftNode'
-					{
-						leftNode->keys[leftNode->size] = current->keys[i];
-						leftNode->children[leftNode->size] = current->children[i];
-						leftNode->size++;
-					}
-					else								/// Push the keys and its forward child to the 'rightNode'
-					{
-						rightNode->keys[rightNode->size] = current->keys[i];
-						rightNode->children[rightNode->size] = current->children[i];
-						rightNode->size++;
-					}
-				}
-			}
-			/// Setting up the 'leftNode'
-			leftNode->children[leftNode->size] = current->children[T_FACTOR - 1];
-			leftNode->parent = newRoot;
-			if (current->isLeaf == true)
-			{
-				leftNode->isLeaf = true;
-			}
-			/// Setting up the 'rightNode'
-			rightNode->children[rightNode->size] = current->children[2 * T_FACTOR - 1];
-			rightNode->parent = newRoot;
-			if (current->isLeaf == true)
-			{
-				rightNode->isLeaf = true;
-			}
-			/// Adding 'middle' to the 'newRoot'
-			newRoot->keys[0] = middle;
-			newRoot->children[0] = leftNode;
-			newRoot->children[1] = rightNode;
-			newRoot->size++;
-			root = newRoot;
-			root->isLeaf = false;
-			root->parent = nullptr;
-			/// Step down
-			current = (key < middle ? leftNode : rightNode);
-		}
-		/// Going down the B-tree
-		while (current->isLeaf == false)
-		{
-			if (current->size == 2 * T_FACTOR - 1)
-			{
-				Node* leftNode = new Node();
-				Node* rightNode = new Node();
-				Node* parent = current->parent;
-				int middle = current->keys[T_FACTOR - 1];		// The element which will go to the 'parent'
-				/// Filling the nodes
-				for (int i = 0; i < 2 * T_FACTOR - 1; i++)
-				{
-					if (i != T_FACTOR - 1)					/// We don't push the 'middle' to the nodes
-					{
-						if (current->keys[i] < middle)		/// Push the keys and its forward child to the 'leftNode'
-	
-					{
-							leftNode->keys[leftNode->size] = current->keys[i];
-							leftNode->children[leftNode->size] = current->children[i];
-							leftNode->size++;
-						}
-						else								/// Push the keys and its forward child to the 'rightNode'
-						{
-							rightNode->keys[rightNode->size] = current->keys[i];
-							rightNode->children[rightNode->size] = current->children[i];
-							rightNode->size++;
-						}
-					}
-				}
-				/// Setting up the 'leftNode'
-				leftNode->children[leftNode->size] = current->children[T_FACTOR - 1];
-				leftNode->parent = parent; 
-				if (current->isLeaf == true)
-				{
-					leftNode->isLeaf = true;
-				}
-				/// Setting up the 'rightNode'
-				rightNode->children[rightNode->size] = current->children[2 * T_FACTOR - 1];
-				rightNode->parent = parent;
-				if (current->isLeaf == true)
-				{
-					rightNode->isLeaf = true;
-				}
-				/// Setting up the 'parent'
-				parent->size++;
-				parent->children[parent->size] = parent->children[parent->size - 1];	/// It relocates in any case
-				int i = parent->size - 1;		// Iterator to the elements in the 'parent'
-				for (; i >= 1; i--)
-				{
-					if (middle >= parent->keys[i - 1])		/// If we found a place where 'middle' should be placed
-					{
-						break;								/// Go to the insertion of the 'middle'
-					}
-					else
-					{
-						parent->keys[i] = parent->keys[i - 1];			/// Relocating keys
-						parent->children[i] = parent->children[i - 1];	/// Relocating children
-					}
-				}
-				/// Insertion of the 'middle'
-				parent->keys[i] = middle;
-				parent->children[i] = leftNode;
-				parent->children[i + 1] = rightNode;	/// Replaces the pointer to the 'current'
-				/// Step down
-				current = (key < middle ? leftNode : rightNode);
-			}
-			else
-			{
-				int i;		// Iterator to the elements in the 'current'
-				for (i = 0; i < current->size; i++)			/// Searching for the necessary child
-				{
-					if (key < current->keys[i])
-					{
-						break;
-					}
-				}
-				current = current->children[i];
-			}
-		}
-		/// Pushing and arranging
-		if (current->size == 2 * T_FACTOR - 1)
-		{
-			Node* leftNode = new Node();
-			Node* rightNode = new Node();
-			Node* parent = current->parent;
-			int middle = current->keys[T_FACTOR - 1];		// The element which will go to the 'parent'
-			/// Filling the nodes
-			for (int i = 0; i < 2 * T_FACTOR - 1; i++)
-			{
-				if (i != T_FACTOR - 1)					/// We don't push the 'middle' to the nodes
-				{
-					if (current->keys[i] < middle)		/// Push the keys and its forward child to the 'leftNode'
-
-					{
-						leftNode->keys[leftNode->size] = current->keys[i];
-						leftNode->children[leftNode->size] = current->children[i];
-						leftNode->size++;
-					}
-					else								/// Push the keys and its forward child to the 'rightNode'
-					{
-						rightNode->keys[rightNode->size] = current->keys[i];
-						rightNode->children[rightNode->size] = current->children[i];
-						rightNode->size++;
-					}
-				}
-			}
-			/// Setting up the 'leftNode'
-			leftNode->children[leftNode->size] = current->children[T_FACTOR - 1];
-			leftNode->parent = parent;
-			if (current->isLeaf == true)
-			{
-				leftNode->isLeaf = true;
-			}
-			/// Setting up the 'rightNode'
-			rightNode->children[rightNode->size] = current->children[2 * T_FACTOR - 1];
-			rightNode->parent = parent;
-			if (current->isLeaf == true)
-			{
-				rightNode->isLeaf = true;
-			}
-			/// Setting up the 'parent'
-			parent->size++;
-			parent->children[parent->size] = parent->children[parent->size - 1];	/// It relocates in any case
-			int i = parent->size - 1;		// Iterator to the elements in the 'parent'
-			for (; i >= 1; i--)
-			{
-				if (middle >= parent->keys[i - 1])		/// If we found a place where 'middle' should be placed
-				{
-					break;								/// Go to the insertion of the 'middle'
-				}
-				else
-				{
-					parent->keys[i] = parent->keys[i - 1];			/// Relocating keys
-					parent->children[i] = parent->children[i - 1];	/// Relocating children
-				}
-			}
-			/// Insertion of the 'middle'
-			parent->keys[i] = middle;
-			parent->children[i] = leftNode;
-			parent->children[i + 1] = rightNode;	/// Replaces the pointer to the 'current'
-			/// Step down
-			current = (key < middle ? leftNode : rightNode);
-		}
-		current->keys[current->size] = key;
-		current->size++;
-		sort(current->keys, current->keys + current->size);*/
 		Node* current = root;		//Iterator to the B-tree nodes
 		/// First check the 'root' whether it is full (special case)
 		if (current->size == 2 * T_FACTOR - 1)
@@ -286,198 +106,12 @@ public:
 			root->parent = newRoot;
 			current = splitNode(current, key);
 			root = newRoot;
-			/*Node* leftNode = new Node();
-			Node* rightNode = new Node();
-			Node* newRoot = new Node();
-			int middle = current->keys[T_FACTOR - 1];	// The middle element which will go to the 'newRoot'
-			/// Filling the nodes
-			for (int i = 0; i < 2 * T_FACTOR - 1; i++)
-			{
-				if (i != T_FACTOR - 1)					/// We don't push the 'middle' to the nodes
-				{
-					if (current->keys[i] < middle)		/// Push the keys and its forward child to the 'leftNode'
-					{
-						leftNode->keys[leftNode->size] = current->keys[i];
-						leftNode->children[leftNode->size] = current->children[i];
-						leftNode->size++;
-					}
-					else								/// Push the keys and its forward child to the 'rightNode'
-					{
-						rightNode->keys[rightNode->size] = current->keys[i];
-						rightNode->children[rightNode->size] = current->children[i];
-						rightNode->size++;
-					}
-				}
-			}
-			/// Setting up the 'leftNode'
-			leftNode->children[leftNode->size] = current->children[T_FACTOR - 1];
-			leftNode->parent = newRoot;
-			if (current->isLeaf == true)
-			{
-				leftNode->isLeaf = true;
-			}
-			/// Setting up the 'rightNode'
-			rightNode->children[rightNode->size] = current->children[2 * T_FACTOR - 1];
-			rightNode->parent = newRoot;
-			if (current->isLeaf == true)
-			{
-				rightNode->isLeaf = true;
-			}
-			/// Adding 'middle' to the 'newRoot'
-			newRoot->keys[0] = middle;
-			newRoot->children[0] = leftNode;
-			newRoot->children[1] = rightNode;
-			newRoot->size++;
-			root = newRoot;
-			root->isLeaf = false;
-			root->parent = nullptr;
-			/// Step down
-			current = (key < middle ? leftNode : rightNode);
 		}
 		/// Going down the B-tree
 		while (current->isLeaf == false)
 		{
 			if (current->size == 2 * T_FACTOR - 1)
 			{
-				Node* leftNode = new Node();
-				Node* rightNode = new Node();
-				Node* parent = current->parent;
-				int middle = current->keys[T_FACTOR - 1];		// The element which will go to the 'parent'
-				/// Filling the nodes
-				for (int i = 0; i < 2 * T_FACTOR - 1; i++)
-				{
-					if (i != T_FACTOR - 1)					/// We don't push the 'middle' to the nodes
-					{
-						if (current->keys[i] < middle)		/// Push the keys and its forward child to the 'leftNode'
-
-					{
-							leftNode->keys[leftNode->size] = current->keys[i];
-							leftNode->children[leftNode->size] = current->children[i];
-							leftNode->size++;
-						}
-						else								/// Push the keys and its forward child to the 'rightNode'
-						{
-							rightNode->keys[rightNode->size] = current->keys[i];
-							rightNode->children[rightNode->size] = current->children[i];
-							rightNode->size++;
-						}
-					}
-				}
-				/// Setting up the 'leftNode'
-				leftNode->children[leftNode->size] = current->children[T_FACTOR - 1];
-				leftNode->parent = parent;
-				if (current->isLeaf == true)
-				{
-					leftNode->isLeaf = true;
-				}
-				/// Setting up the 'rightNode'
-				rightNode->children[rightNode->size] = current->children[2 * T_FACTOR - 1];
-				rightNode->parent = parent;
-				if (current->isLeaf == true)
-				{
-					rightNode->isLeaf = true;
-				}
-				/// Setting up the 'parent'
-				parent->size++;
-				parent->children[parent->size] = parent->children[parent->size - 1];	/// It relocates in any case
-				int i = parent->size - 1;		// Iterator to the elements in the 'parent'
-				for (; i >= 1; i--)
-				{
-					if (middle >= parent->keys[i - 1])		/// If we found a place where 'middle' should be placed
-					{
-						break;								/// Go to the insertion of the 'middle'
-					}
-					else
-					{
-						parent->keys[i] = parent->keys[i - 1];			/// Relocating keys
-						parent->children[i] = parent->children[i - 1];	/// Relocating children
-					}
-				}
-				/// Insertion of the 'middle'
-				parent->keys[i] = middle;
-				parent->children[i] = leftNode;
-				parent->children[i + 1] = rightNode;	/// Replaces the pointer to the 'current'
-				/// Step down
-				current = (key < middle ? leftNode : rightNode);
-			}
-			else
-			{
-				int i;		// Iterator to the elements in the 'current'
-				for (i = 0; i < current->size; i++)			/// Searching for the necessary child
-				{
-					if (key < current->keys[i])
-					{
-						break;
-					}
-				}
-				current = current->children[i];
-			}*/
-		}
-		/// Going down the B-tree
-		while (current->isLeaf == false)
-		{
-			if (current->size == 2 * T_FACTOR - 1)
-			{
-				/*Node* leftNode = new Node();
-				Node* rightNode = new Node();
-				Node* parent = current->parent;
-				int middle = current->keys[T_FACTOR - 1];		// The element which will go to the 'parent'
-				/// Filling the nodes
-				for (int i = 0; i < 2 * T_FACTOR - 1; i++)
-				{
-					if (i != T_FACTOR - 1)					/// We don't push the 'middle' to the nodes
-					{
-						if (current->keys[i] < middle)		/// Push the keys and its forward child to the 'leftNode'
-
-						{
-							leftNode->keys[leftNode->size] = current->keys[i];
-							leftNode->children[leftNode->size] = current->children[i];
-							leftNode->size++;
-						}
-						else								/// Push the keys and its forward child to the 'rightNode'
-						{
-							rightNode->keys[rightNode->size] = current->keys[i];
-							rightNode->children[rightNode->size] = current->children[i];
-							rightNode->size++;
-						}
-					}
-				}
-				/// Setting up the 'leftNode'
-				leftNode->children[leftNode->size] = current->children[T_FACTOR - 1];
-				leftNode->parent = parent;
-				if (current->isLeaf == true)
-				{
-					leftNode->isLeaf = true;
-				}
-				/// Setting up the 'rightNode'
-				rightNode->children[rightNode->size] = current->children[2 * T_FACTOR - 1];
-				rightNode->parent = parent;
-				if (current->isLeaf == true)
-				{
-					rightNode->isLeaf = true;
-				}
-				/// Setting up the 'parent'
-				parent->size++;
-				parent->children[parent->size] = parent->children[parent->size - 1];	/// It relocates in any case
-				int i = parent->size - 1;		// Iterator to the elements in the 'parent'
-				for (; i >= 1; i--)
-				{
-					if (middle >= parent->keys[i - 1])		/// If we found a place where 'middle' should be placed
-					{
-						break;								/// Go to the insertion of the 'middle'
-					}
-					else
-					{
-						parent->keys[i] = parent->keys[i - 1];			/// Relocating keys
-						parent->children[i] = parent->children[i - 1];	/// Relocating children
-					}
-				}
-				/// Insertion of the 'middle'
-				parent->keys[i] = middle;
-				parent->children[i] = leftNode;
-				parent->children[i + 1] = rightNode;	/// Replaces the pointer to the 'current'
-				/// Step down
-				current = (key < middle ? leftNode : rightNode);*/
 				current = splitNode(current, key);
 			}
 			else
@@ -497,66 +131,53 @@ public:
 		if (current->size == 2 * T_FACTOR - 1)
 		{
 			current = splitNode(current, key);
-			/*Node* leftNode = new Node();
-			Node* rightNode = new Node();
-			Node* parent = current->parent;
-			int middle = current->keys[T_FACTOR - 1];		// The element which will go to the 'parent'
-			/// Filling the nodes
-			for (int i = 0; i < 2 * T_FACTOR - 1; i++)
+		}
+		current->keys[current->size] = key;
+		current->size++;
+		sort(current->keys, current->keys + current->size);
+	}
+	void remove(int key)
+	{
+		Node* current = root;		//Iterator to the B-tree nodes
+		bool keyFound = false;
+		/// Going down the B-tree
+		while (keyFound == false)
+		{
+			int i;		// Iterator to the elements in the 'current'
+			for (i = 0; i < current->size; i++)			/// Searching for the necessary child
 			{
-				if (i != T_FACTOR - 1)					/// We don't push the 'middle' to the nodes
+				if (key < current->keys[i])
 				{
-					if (current->keys[i] < middle)		/// Push the keys and its forward child to the 'leftNode'
+					break;
+				}
+			}
+			current = current->children[i];
+		}
 
-					{
-						leftNode->keys[leftNode->size] = current->keys[i];
-						leftNode->children[leftNode->size] = current->children[i];
-						leftNode->size++;
-					}
-					else								/// Push the keys and its forward child to the 'rightNode'
-					{
-						rightNode->keys[rightNode->size] = current->keys[i];
-						rightNode->children[rightNode->size] = current->children[i];
-						rightNode->size++;
-					}
-				}
-			}
-			/// Setting up the 'leftNode'
-			leftNode->children[leftNode->size] = current->children[T_FACTOR - 1];
-			leftNode->parent = parent;
-			if (current->isLeaf == true)
+
+		while (current->isLeaf == false)
+		{
+			if (current->size == 2 * T_FACTOR - 1)
 			{
-				leftNode->isLeaf = true;
+				current = splitNode(current, key);
 			}
-			/// Setting up the 'rightNode'
-			rightNode->children[rightNode->size] = current->children[2 * T_FACTOR - 1];
-			rightNode->parent = parent;
-			if (current->isLeaf == true)
+			else
 			{
-				rightNode->isLeaf = true;
-			}
-			/// Setting up the 'parent'
-			parent->size++;
-			parent->children[parent->size] = parent->children[parent->size - 1];	/// It relocates in any case
-			int i = parent->size - 1;		// Iterator to the elements in the 'parent'
-			for (; i >= 1; i--)
-			{
-				if (middle >= parent->keys[i - 1])		/// If we found a place where 'middle' should be placed
+				int i;		// Iterator to the elements in the 'current'
+				for (i = 0; i < current->size; i++)			/// Searching for the necessary child
 				{
-					break;								/// Go to the insertion of the 'middle'
+					if (key < current->keys[i])
+					{
+						break;
+					}
 				}
-				else
-				{
-					parent->keys[i] = parent->keys[i - 1];			/// Relocating keys
-					parent->children[i] = parent->children[i - 1];	/// Relocating children
-				}
+				current = current->children[i];
 			}
-			/// Insertion of the 'middle'
-			parent->keys[i] = middle;
-			parent->children[i] = leftNode;
-			parent->children[i + 1] = rightNode;	/// Replaces the pointer to the 'current'
-			/// Step down
-			current = (key < middle ? leftNode : rightNode);*/
+		}
+		/// Pushing and arranging
+		if (current->size == 2 * T_FACTOR - 1)
+		{
+			current = splitNode(current, key);
 		}
 		current->keys[current->size] = key;
 		current->size++;
