@@ -6,30 +6,33 @@ public class Main {
 
     public static void main(String[] args) {
         // Initializing
+
+        /* Input data:
+         * 5
+         * 13
+         * Pen 3 1
+         * Pencilbox 4 6
+         * Eraser 5 4
+         * Cup 8 7
+         * Phone 9 6
+         */
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("Enter number of items: ");
-        int amount = /*scan.nextInt()*/ 5;
+        System.out.print("Enter number of items: ");
+        int amount = scan.nextInt();
 
-        System.out.println("\nEnter a size of backpack: ");
-        int maxWeight = /*scan.nextInt()*/ 15;
+        System.out.print("Enter a size of backpack: ");
+        int maxWeight = scan.nextInt();
 
         Item[] items = new Item[amount];
 
-        /*System.out.println("\nEnter name of item, its weight and price by space:\n");
+        System.out.println("Enter name of item, its weight and price by space:");
         for (int i = 0; i < amount; i++) {            // Filling the arrays
             String name = scan.next();
             int weight = scan.nextInt();
             int price = scan.nextInt();
             items[i] = new Item(name, weight, price);
-        }*/
-
-        items[0] = new Item("Pen", 3, 1);
-        items[1] = new Item("Pencilbox", 14, 6);
-        items[2] = new Item("Eraser", 5, 4);
-        items[3] = new Item("Cup", 8, 7);
-        items[4] = new Item("Phone", 9, 6);
-
+        }
         Backpack backpack = new Backpack(amount, items, maxWeight);
         backpack.findBestPackDynamic();
         backpack.findBestPackGreedy();
@@ -156,28 +159,28 @@ class Backpack {
         System.out.println(finalNames);
     }
 
-    public void findMaxPack() { // TODO
-        int[] sortWeights = new int[amount];
-        for (int i = 0; i < amount; i++) {
-            sortWeights[i] = items[i].weight;
-        }
-        Arrays.sort(sortWeights);
-
-        for (int i = 0; i < amount; i++) {
-            System.out.println(sortWeights[i]);
-        }
-
+    public void findMaxPack() {
+        List<Item> sortedItems = Arrays.asList(items.clone());
+        Collections.sort(sortedItems, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Item first = (Item) o1;
+                Item second = (Item) o2;
+                Integer firstWeight = first.weight;
+                Integer secondWeight = second.weight;
+                return firstWeight.compareTo(secondWeight);
+            }
+        } );
         int freeSpace = maxWeight;
-        int maxPack = 0;
-        while(maxPack < amount && freeSpace - sortWeights[maxPack] >= 0) {
-            freeSpace -= sortWeights[maxPack];
-            maxPack++;
+        int itemsNumber = 0;
+        while(itemsNumber < amount && freeSpace - sortedItems.get(itemsNumber).weight >= 0) {
+            freeSpace -= sortedItems.get(itemsNumber).weight;
             for(int j = 0; j < amount; j++) {
-                if(items[j].weight {
-                    answerGreedy.add(j);
+                if(items[j].equals(sortedItems.get(itemsNumber))) {
+                    answerMaxPack.add(j);
                     break;
                 }
             }
+            itemsNumber++;
         }
         System.out.println("==========Max pack results==========");
         printBestPack(answerMaxPack);
@@ -214,13 +217,13 @@ class Backpack {
         if(answerIntersection1.isEmpty() == false) {
             printBestPack(answerIntersection1);
         } else {
-            System.out.println("There is no intersection1");
+            System.out.println("There is no intersection");
         }
         System.out.println("==========Intersection of greedy and max pack results==========");
         if(answerIntersection2.isEmpty() == false) {
             printBestPack(answerIntersection2);
         } else {
-            System.out.println("There is no intersection1");
+            System.out.println("There is no intersection");
         }
     }
 }

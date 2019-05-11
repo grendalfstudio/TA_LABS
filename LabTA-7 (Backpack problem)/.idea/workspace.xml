@@ -53,12 +53,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="3196" />
+          <entry key="java" value="3409" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="3196" />
+          <entry key="JAVA" value="3409" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -81,15 +81,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="158" column="39" lean-forward="true" selection-start-line="158" selection-start-column="39" selection-end-line="158" selection-end-column="39" />
+            <state relative-caret-position="408">
+              <caret line="24" column="39" lean-forward="true" selection-end-line="228" selection-end-column="1" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="class#Item#0" />
                 <element signature="method#Backpack#0;class#Backpack#0" />
                 <element signature="method#findBestPackDynamic#0;class#Backpack#0" />
                 <element signature="method#findAnswerDynamic#0;class#Backpack#0" />
+                <element signature="method#findBestPackGreedy#0;class#Backpack#0" />
                 <element signature="class#3732:4466" />
+                <element signature="method#printBestPack#0;class#Backpack#0" />
+                <element signature="method#findMaxPack#0;class#Backpack#0" />
+                <element signature="class#6856:7478" />
+                <element signature="method#findIntersection#0;class#Backpack#0" />
               </folding>
             </state>
           </provider>
@@ -118,7 +123,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
     <option name="width" value="697" />
     <option name="height" value="735" />
@@ -150,9 +155,9 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="Git&#9;ACTION&#9;Git.Init" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557523225553" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557593826180" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../.." />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -231,11 +236,17 @@
       <window_info anchor="right" id="Theme Preview" order="5" />
       <window_info anchor="right" id="Palette&#9;" order="6" />
       <window_info anchor="right" id="Maven Projects" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="right" x="387" y="237" width="822" height="431" id="Run" order="8" sideWeight="0.4984733" side_tool="true" type="WINDOWED" visible="true" weight="0.30635402" />
+      <window_info anchor="right" x="472" y="125" width="822" height="431" id="Run" order="8" sideWeight="0.4984733" side_tool="true" type="WINDOWED" weight="0.30635402" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/.." />
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -294,15 +305,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="158" column="39" lean-forward="true" selection-start-line="158" selection-start-column="39" selection-end-line="158" selection-end-column="39" />
+        <state relative-caret-position="408">
+          <caret line="24" column="39" lean-forward="true" selection-end-line="228" selection-end-column="1" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="class#Item#0" />
             <element signature="method#Backpack#0;class#Backpack#0" />
             <element signature="method#findBestPackDynamic#0;class#Backpack#0" />
             <element signature="method#findAnswerDynamic#0;class#Backpack#0" />
+            <element signature="method#findBestPackGreedy#0;class#Backpack#0" />
             <element signature="class#3732:4466" />
+            <element signature="method#printBestPack#0;class#Backpack#0" />
+            <element signature="method#findMaxPack#0;class#Backpack#0" />
+            <element signature="class#6856:7478" />
+            <element signature="method#findIntersection#0;class#Backpack#0" />
           </folding>
         </state>
       </provider>
