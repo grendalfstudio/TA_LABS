@@ -43,12 +43,13 @@
     <session id="-1436186891">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="4" />
           <entry key="project.open.time.30" value="1" />
           <entry key="project.open.time.35" value="1" />
+          <entry key="project.open.time.39" value="1" />
           <entry key="project.open.time.42" value="1" />
           <entry key="project.open.time.43" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
@@ -81,20 +82,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="24" column="39" lean-forward="true" selection-end-line="228" selection-end-column="1" />
+            <state relative-caret-position="153">
+              <caret line="9" column="22" lean-forward="true" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="class#Item#0" />
                 <element signature="method#Backpack#0;class#Backpack#0" />
-                <element signature="method#findBestPackDynamic#0;class#Backpack#0" />
                 <element signature="method#findAnswerDynamic#0;class#Backpack#0" />
-                <element signature="method#findBestPackGreedy#0;class#Backpack#0" />
-                <element signature="class#3732:4466" />
-                <element signature="method#printBestPack#0;class#Backpack#0" />
-                <element signature="method#findMaxPack#0;class#Backpack#0" />
-                <element signature="class#6856:7478" />
-                <element signature="method#findIntersection#0;class#Backpack#0" />
               </folding>
             </state>
           </provider>
@@ -155,7 +149,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="Git&#9;ACTION&#9;Git.Init" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557593826180" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557734638759" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../.." />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
@@ -208,7 +202,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.20574887" />
       <window_info id="Designer" order="1" />
@@ -305,20 +298,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="39" lean-forward="true" selection-end-line="228" selection-end-column="1" />
+        <state relative-caret-position="153">
+          <caret line="9" column="22" lean-forward="true" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="class#Item#0" />
             <element signature="method#Backpack#0;class#Backpack#0" />
-            <element signature="method#findBestPackDynamic#0;class#Backpack#0" />
             <element signature="method#findAnswerDynamic#0;class#Backpack#0" />
-            <element signature="method#findBestPackGreedy#0;class#Backpack#0" />
-            <element signature="class#3732:4466" />
-            <element signature="method#printBestPack#0;class#Backpack#0" />
-            <element signature="method#findMaxPack#0;class#Backpack#0" />
-            <element signature="class#6856:7478" />
-            <element signature="method#findIntersection#0;class#Backpack#0" />
           </folding>
         </state>
       </provider>

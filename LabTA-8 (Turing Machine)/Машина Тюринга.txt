@@ -1,0 +1,64 @@
+; This program finds x + y (if x > y) or x * y (if x <= y)
+; Input: two strings of 0's and 1's, eg '1001001 1100'
+
+; Machine starts in state 0.
+
+;====== First part: copy the input ======
+; State 0: read the leftmost symbol of the first number
+; 0-group of the first number
+0 0 a r 0-copy0 		; replace 0 with a
+0 1 b r 0-copy1			; replace 1 with b
+0 _ * r 1			; go over the space
+
+0-copy0 * * r 0-copy0
+0-copy0 _ * r 0-copy0-1s
+
+0-copy0-1s * * r 0-copy0-1s
+0-copy0-1s _ * r 0-copy0-2s
+
+0-copy0-2s _ 0 l 0-moveback
+0-copy0-2s * * r 0-copy0-2s
+
+
+0-copy1 * * r 0-copy1
+0-copy1 _ * r 0-copy1-1s
+
+0-copy1-1s * * r 0-copy1-1s
+0-copy1-1s _ * r 0-copy1-2s
+
+0-copy1-2s _ 1 l 0-moveback
+0-copy1-2s * * r 0-copy1-2s
+
+0-moveback * * l 0-moveback
+0-moveback a * r 0
+0-moveback b * r 0
+
+; 1-group of the second number
+1 0 a r 1-copy0 		; replace 0 with a
+1 1 b r 1-copy1			; replace 1 with b
+1 _ * r comp			; go over the space
+
+1-copy0 * * r 1-copy0
+1-copy0 _ * r 1-copy0-1s
+
+1-copy0-1s * * r 1-copy0-1s
+1-copy0-1s _ * r 1-copy0-2s
+
+1-copy0-2s _ 0 l 1-moveback
+1-copy0-2s * * r 1-copy0-2s
+
+
+1-copy1 * * r 1-copy1
+1-copy1 _ * r 1-copy1-1s
+
+1-copy1-1s * * r 1-copy1-1s
+1-copy1-1s _ * r 1-copy1-2s
+
+1-copy1-2s _ 1 l 1-moveback
+1-copy1-2s * * r 1-copy1-2s
+
+1-moveback * * l 1-moveback
+1-moveback a * r 1
+1-moveback b * r 1
+
+;===== Second part: compare the input ===== 
