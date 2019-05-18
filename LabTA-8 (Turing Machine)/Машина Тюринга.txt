@@ -3,12 +3,12 @@
 
 ; Machine starts in state 0.
 
-;====== First part: copy the input ======
+;====== First part: copy the input to right ======
 ; State 0: read the leftmost symbol of the first number
 ; 0-group of the first number
 0 0 a r 0-copy0 		; replace 0 with a
 0 1 b r 0-copy1			; replace 1 with b
-0 _ * r 1			; go over the space
+0 _ # r split			; put splitter and go over the space
 
 0-copy0 * * r 0-copy0
 0-copy0 _ * r 0-copy0-1s
@@ -33,16 +33,26 @@
 0-moveback a * r 0
 0-moveback b * r 0
 
+; Put a splitter # between the copied numbers
+split * * r split
+split _ * r split-1s
+
+split-1s * * r split-1s
+split-1s _ # l split-back
+
+split-back * * l split-back
+split-back # * r 1
+
 ; 1-group of the second number
 1 0 a r 1-copy0 		; replace 0 with a
 1 1 b r 1-copy1			; replace 1 with b
-1 _ * r comp			; go over the space
+1 _ * r 0-comp			; go over the space
 
 1-copy0 * * r 1-copy0
 1-copy0 _ * r 1-copy0-1s
 
 1-copy0-1s * * r 1-copy0-1s
-1-copy0-1s _ * r 1-copy0-2s
+1-copy0-1s # * r 1-copy0-2s
 
 1-copy0-2s _ 0 l 1-moveback
 1-copy0-2s * * r 1-copy0-2s
@@ -52,7 +62,7 @@
 1-copy1 _ * r 1-copy1-1s
 
 1-copy1-1s * * r 1-copy1-1s
-1-copy1-1s _ * r 1-copy1-2s
+1-copy1-1s # * r 1-copy1-2s
 
 1-copy1-2s _ 1 l 1-moveback
 1-copy1-2s * * r 1-copy1-2s
@@ -62,3 +72,100 @@
 1-moveback b * r 1
 
 ;===== Second part: compare the input ===== 
+; State 0-comp: read the leftmost symbol of copied numbers
+0-comp * _ r 0-comp-R
+0-comp # * r #-comp
+
+0-comp-R * * r 0-comp-R
+0-comp-R _ * l 1-comp
+
+1-comp * _ l 1-comp-L
+1-comp # * * greater
+
+1-comp-L * * l 1-comp-L
+1-comp-L _ * r 0-comp
+
+#-comp _ * * equal-back
+#-comp * * r less_equal
+
+equal-back * _ l equal-back
+equal-back a * * compAB
+equal-back b * * compAB
+
+;=== Additional compare for numbers with equal length ===
+compAB * * l compAB
+compAB _ * r equal
+
+equal a 0 r compA
+equal b 1 r compB
+equal # * r less_equal-L
+
+; compA group
+compA * * r compA
+compA # * r compA#
+
+compA# * * r compA#
+compA# a 0 l comp-back
+compA# b 1 l less_equal-L
+
+; compB group
+compB * * r compB
+compB # * r compB#
+
+compB# * * r compB#
+compB# b 1 l comp-back
+compB# a 0 l greater-L
+
+; Moving backwards
+comp-back * * l comp-back
+comp-back # * l comp-back#
+
+comp-back# * * l comp-back#
+comp-back# 0 * r equal
+comp-back# 1 * r equal
+
+; Replacing digits into the symbols
+greater-L * * r greater-L
+greater-L _ * l G-replace
+
+G-replace a 0 l G-replace
+G-replace b 1 l G-replace
+G-replace # _ l G-replace
+G-replace * * l G-replace
+G-replace _ * r greater
+
+less_equal-L * * r less_equal-L
+less_equal-L _ * l LE-replace
+
+LE-replace a 0 l LE-replace
+LE-replace b 1 l LE-replace
+LE-replace # _ l LE-replace
+LE-replace * * l LE-replace
+LE-replace _ * r less_equal
+
+;===== 3.1 part: find x + y (x > y) =====
+greater * _ l greater
+greater a * * G-leftAB
+greater b * * G-leftAB
+
+G-leftAB a 0 l G-leftAB
+G-leftAB b 1 l G-leftAB
+G-leftAB # _ l G-leftAB
+G-leftAB _ * r sum
+
+sum
+
+;===== 3.2 part: find x * y (x <= y) =====
+less_equal * _ r less_equal
+less_equal _ * l LE-left
+
+LE-left * _ l LE-left
+LE-left a 0 l LE-leftAB
+LE-left b 1 l LE-leftAB
+
+LE-leftAB a 0 l LE-leftAB
+LE-leftAB b 1 l LE-leftAB
+LE-leftAB # _ l LE-leftAB
+LE-leftAB _ * r product
+
+product
