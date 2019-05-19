@@ -141,7 +141,7 @@ LE-replace a 0 l LE-replace
 LE-replace b 1 l LE-replace
 LE-replace # _ l LE-replace
 LE-replace * * l LE-replace
-LE-replace _ * r less_equal
+LE-replace _ * r product
 
 ;===== 3.1 part: find x + y (x > y) =====
 greater * _ l greater
