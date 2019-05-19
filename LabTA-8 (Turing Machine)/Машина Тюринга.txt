@@ -132,7 +132,7 @@ G-replace a 0 l G-replace
 G-replace b 1 l G-replace
 G-replace # _ l G-replace
 G-replace * * l G-replace
-G-replace _ * r greater
+G-replace _ * r sum
 
 less_equal-L * * r less_equal-L
 less_equal-L _ * l LE-replace
