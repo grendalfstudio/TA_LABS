@@ -1,0 +1,24 @@
+button{
+    font-family: Verdana, sans-serif;
+}
+label{
+    font-size: 110%;
+    color: red;
+    background: white;
+}
+textbox{
+    color: red;
+    background: yellow;
+    font-weight: bold;
+}
+checkbox{
+    background: green;
+combobox{
+    margin: 0;
+}
+radiobutton{
+    text-decoration: none;
+}
+listbox{
+    color: red;
+}
