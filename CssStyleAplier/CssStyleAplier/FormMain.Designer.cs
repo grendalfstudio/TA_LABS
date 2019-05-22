@@ -1,6 +1,6 @@
 ﻿namespace CssStyleAplier
 {
-    partial class Form1
+    partial class FormMain
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -39,6 +39,7 @@
             // 
             // button
             // 
+            this.button.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button.Location = new System.Drawing.Point(12, 12);
             this.button.Name = "button";
             this.button.Size = new System.Drawing.Size(200, 50);
@@ -117,7 +118,7 @@
             this.listBox.Size = new System.Drawing.Size(200, 69);
             this.listBox.TabIndex = 6;
             // 
-            // Form1
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -129,7 +130,7 @@
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.label);
             this.Controls.Add(this.button);
-            this.Name = "Form1";
+            this.Name = "FormMain";
             this.Text = "CSS Style Aplier";
             this.ResumeLayout(false);
             this.PerformLayout();

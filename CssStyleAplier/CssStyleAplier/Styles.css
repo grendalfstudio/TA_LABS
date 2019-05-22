@@ -1,7 +1,17 @@
 button{
-    font-family: Verdana, sans-serif;
+    background-color : aqua;
+    color : red;
+    cursor : copy;
+    fill : blue;
+    font-family : 'Microsoft Sans Serif';
+    font-size : 8px;
+    font-weight : bold;
+    font-style : italic;
+    text-align : center;
+    text-decoration : underline;
 }
 label{
+    
     font-size: 110%;
     color: red;
     background: white;
